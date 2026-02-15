@@ -14,10 +14,26 @@ exports.createPoll = async (req, res) => {
   res.json(poll);
 };
 
+// exports.getPoll = async (req, res) => {
+//   const poll = await Poll.findById(req.params.id);
+//   res.json(poll);
+// };
 exports.getPoll = async (req, res) => {
   const poll = await Poll.findById(req.params.id);
-  res.json(poll);
+  if (!poll) return res.status(404).json({ error: "Poll not found" });
+
+  const voterId = req.cookies.voterId;
+  const ip = req.ip;
+  const voterKey = voterId + ip;
+
+  const hasVoted = poll.voters.includes(voterKey);
+
+  res.json({
+    ...poll.toObject(),
+    hasVoted
+  });
 };
+
 
 exports.votePoll = async (req, res) => {
   try {
