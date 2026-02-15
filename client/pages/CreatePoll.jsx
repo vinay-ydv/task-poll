@@ -28,7 +28,7 @@ export default function CreatePoll() {
 
 
       const res = await axios.post(
-        "http://localhost:5000/api/polls",
+        "https://task-poll-backend.onrender.com/api/polls",
         {
           question,
           options: validOptions

@@ -28,7 +28,7 @@ export default function PollRoom() {
  const fetchPoll = async () => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/polls/${id}`,
+      `https://task-poll-backend.onrender.com/api/polls/${id}`,
       { withCredentials: true }
     );
 
@@ -45,7 +45,7 @@ export default function PollRoom() {
       setError("");
 
       await axios.post(
-        `http://localhost:5000/api/polls/${id}/vote`,
+        `https://task-poll-backend.onrender.com/api/polls/${id}/vote`,
         { optionIndex: index },
         { withCredentials: true }
       );
