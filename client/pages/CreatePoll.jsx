@@ -36,7 +36,7 @@ export default function CreatePoll() {
         { withCredentials: true }
       );
 
-      setLink(`${window.location.origin}/poll/${res.data._id}`);
+      setLink(`${window.location.origin}/#/poll/${res.data._id}`);
 
     
       setQuestion("");
