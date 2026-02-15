@@ -35,35 +35,71 @@ exports.getPoll = async (req, res) => {
 };
 
 
+// exports.votePoll = async (req, res) => {
+//   try {
+//     const pollId = req.params.id;
+//     const { optionIndex } = req.body;
+
+//     const poll = await Poll.findById(pollId);
+//     if (!poll) {
+//       return res.status(404).json({ error: "Poll not found" });
+//     }
+
+ 
+//     if (optionIndex < 0 || optionIndex >= poll.options.length) {
+//       return res.status(400).json({ error: "Invalid option" });
+//     }
+
+//     const voterId = req.cookies.voterId;
+//     const ip = req.ip;
+//     const voterKey = voterId + ip;
+
+   
+//     if (poll.voters.includes(voterKey)) {
+//       return res.status(403).json({ error: "Already voted" });
+//     }
+
+ 
+//     poll.options[optionIndex].votes += 1;
+//     poll.voters.push(voterKey);
+
+//     await poll.save();
+
+//     socket.emitVote(pollId, poll);
+
+//     res.json(poll);
+
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
 exports.votePoll = async (req, res) => {
   try {
     const pollId = req.params.id;
     const { optionIndex } = req.body;
 
-    const poll = await Poll.findById(pollId);
-    if (!poll) {
-      return res.status(404).json({ error: "Poll not found" });
-    }
-
- 
-    if (optionIndex < 0 || optionIndex >= poll.options.length) {
-      return res.status(400).json({ error: "Invalid option" });
-    }
-
     const voterId = req.cookies.voterId;
     const ip = req.ip;
     const voterKey = voterId + ip;
 
-   
-    if (poll.voters.includes(voterKey)) {
+    // atomic update
+    const poll = await Poll.findOneAndUpdate(
+      {
+        _id: pollId,
+        voters: { $ne: voterKey }   // only update if NOT voted
+      },
+      {
+        $inc: { [`options.${optionIndex}.votes`]: 1 },
+        $addToSet: { voters: voterKey }
+      },
+      { new: true }
+    );
+
+    if (!poll) {
       return res.status(403).json({ error: "Already voted" });
     }
-
- 
-    poll.options[optionIndex].votes += 1;
-    poll.voters.push(voterKey);
-
-    await poll.save();
 
     socket.emitVote(pollId, poll);
 
