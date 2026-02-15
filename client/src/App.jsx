@@ -1,16 +1,16 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import CreatePoll from "../pages/CreatePoll.jsx";
 import PollRoom from "../pages/PollRoom.jsx";
 
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<CreatePoll />} />
         <Route path="/poll/:id" element={<PollRoom />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
