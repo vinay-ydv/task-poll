@@ -9,7 +9,9 @@ const voter = require("./middleware/voter.js");
 const socket = require("./socket.js");
 
 const app = express();
-app.use(cors({ origin: true, credentials: true }));
+app.set("trust proxy", 1);
+
+app.use(cors({ origin: "https://task-poll-frontend.onrender.com", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(voter);
