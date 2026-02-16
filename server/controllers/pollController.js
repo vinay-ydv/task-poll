@@ -24,7 +24,7 @@ exports.getPoll = async (req, res) => {
 
   const voterId = req.cookies.voterId;
   const ip = req.ip;
-  const voterKey = voterId + ip;
+  const voterKey =req.cookies.voterId ;
 
   const hasVoted = poll.voters.includes(voterKey);
 
@@ -82,8 +82,8 @@ exports.votePoll = async (req, res) => {
 
     const voterId = req.cookies.voterId;
     const ip = req.ip;
-    const voterKey = voterId + ip;
-
+    // const voterKey = voterId + ip;
+const voterKey =  req.cookies.voterId;
     // atomic update
     const poll = await Poll.findOneAndUpdate(
       {
